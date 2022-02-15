@@ -1,0 +1,49 @@
+  n = n + ((!!(x >> (n + 8)) << 3);
+  n = n + ((!!(x >> (n + 4)) << 2);
+  n = n + ((!!(x >> (n + 2)) << 1);
+  n = n + ((!!(x >> (n + 1))));
+  n = n + (x >> n);
+  return n + 1;
+}
+//float
+/*
+ * floatScale2 - Return bit-level equivalent of expression 2*f for
+ *   floating point argument f.
+ *   Both the argument and result are passed as unsigned int's, but
+ *   they are to be interpreted as the bit-level representation of
+ *   single-precision floating point values.
+ *   When argument is NaN, return argument
+ *   Legal ops: Any integer/unsigned operations incl. ||, &&. also if, while
+ *   Max ops: 30
+ *   Rating: 4
+ */
+unsigned floatScale2(unsigned uf) {
+  int isNeg = uf >> 31;
+  int exp = (uf >> 23) & 0xFF;
+  int fraction1 = uf & 0x7FFFFF;
+  int bias = 127;
+  int fraction2 = 23;
+
+    if (exp == 0xFF || exp > bias + 31)
+        return 0x80000000;
+
+    if (exp >= bias) {
+        int power2 = exp - bias;
+        if (power2 <= fraction2)
+            fraction1 = fraction1 >> (fraction2 - power2);
+        else
+            fraction1 = fraction1 << (power2 - fraction2);
+        int value = (1 << power2) | fraction1;
+        return isNeg ? -value : value;
+    }
+    return 0;
+}
+/*
+ * floatFloat2Int - Return bit-level equivalent of expression (int) f
+ *   for floating point argument f.
+ *   Argument is passed as unsigned int, but
+ *   it is to be interpreted as the bit-level representation of a
+ *   single-precision floating point value.
+ *   Anything out of range (including NaN and infinity) should return
+bits.c[+] [unix] (22:15 17/01/2022)                                                                                                   318,12 81%
+-- INSERT --
